@@ -1,9 +1,12 @@
 from django.db import models
 
+from users.models import User
+
 NULLABLE = {'null': True, 'blank': True}
 
 
 class Course(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, **NULLABLE, verbose_name='Пользователь')
     title = models.CharField(max_length=200, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')
     image = models.ImageField(upload_to='courses/preview', **NULLABLE, verbose_name='Превью')
@@ -18,6 +21,7 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, **NULLABLE, verbose_name='Пользователь')
     title = models.CharField(max_length=200, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')
     image = models.ImageField(upload_to='lessons/preview', **NULLABLE, verbose_name='Превью')

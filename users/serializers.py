@@ -10,7 +10,7 @@ class PaymentSerializer(ModelSerializer):
 
 
 class UserSerializer(ModelSerializer):
-    payments = PaymentSerializer(source='payment_set', many=True)
+    payments = PaymentSerializer(source='payment_set', many=True, read_only=True)
 
     class Meta:
         model = User

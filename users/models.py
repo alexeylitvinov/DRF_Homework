@@ -1,8 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from materials.models import Course, Lesson
-
 NULLABLE = {'null': True, 'blank': True}
 
 
@@ -25,6 +23,9 @@ class User(AbstractUser):
 
     def __str__(self):
         return f'{self.email}'
+
+
+from materials.models import Course, Lesson
 
 
 class Payment(models.Model):
