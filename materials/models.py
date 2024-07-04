@@ -6,10 +6,14 @@ NULLABLE = {'null': True, 'blank': True}
 
 
 class Course(models.Model):
+    """
+    Модель курса
+    """
     user = models.ForeignKey(User, on_delete=models.SET_NULL, **NULLABLE, verbose_name='Пользователь')
     title = models.CharField(max_length=200, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')
     image = models.ImageField(upload_to='courses/preview', **NULLABLE, verbose_name='Превью')
+    price = models.PositiveIntegerField(default=1000, verbose_name='Цена')
 
     class Meta:
         db_table = 'courses'
@@ -21,6 +25,9 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
+    """
+    Модель урока
+    """
     user = models.ForeignKey(User, on_delete=models.SET_NULL, **NULLABLE, verbose_name='Пользователь')
     title = models.CharField(max_length=200, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')

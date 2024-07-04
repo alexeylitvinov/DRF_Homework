@@ -8,6 +8,9 @@ from subscriptions.serializers import SubscriptionSerializer
 
 
 class ManageSubscriptionAPIView(APIView):
+    """
+    Класс для обработки подписки пользователя на курс.
+    """
     serializer_class = SubscriptionSerializer
 
     def post(self, request, *args, **kwargs):

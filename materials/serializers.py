@@ -7,6 +7,9 @@ from subscriptions.models import Subscription
 
 
 class LessonSerializer(ModelSerializer):
+    """
+    Сериализатор для модели Lesson
+    """
     class Meta:
         model = Lesson
         fields = '__all__'
@@ -14,6 +17,9 @@ class LessonSerializer(ModelSerializer):
 
 
 class CourseSerializer(ModelSerializer):
+    """
+    Сериализатор для модели Course
+    """
     lesson_count = SerializerMethodField()
     lessons = LessonSerializer(source='lesson_set', many=True, read_only=True)
     is_subscribed = SerializerMethodField()

@@ -2,6 +2,9 @@ from rest_framework.exceptions import ValidationError
 
 
 class ValidateLink:
+    """
+    Валидация ссылки на YouTube
+    """
     def __init__(self, field):
         self.field = field
 

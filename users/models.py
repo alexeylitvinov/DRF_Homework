@@ -5,6 +5,9 @@ NULLABLE = {'null': True, 'blank': True}
 
 
 class User(AbstractUser):
+    """
+    Модель пользователя
+    """
     username = None
     email = models.EmailField(unique=True, verbose_name='Почта')
     first_name = models.CharField(max_length=50, **NULLABLE, verbose_name='Имя')
@@ -25,16 +28,24 @@ class User(AbstractUser):
         return f'{self.email}'
 
 
-from materials.models import Course, Lesson
+from materials.models import Course
 
 
 class Payment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    """
+    Модель оплаты
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, **NULLABLE, verbose_name='Пользователь')
     date = models.DateField(auto_now_add=True, verbose_name='Дата')
     paid_course = models.ForeignKey(Course, on_delete=models.CASCADE, **NULLABLE, verbose_name='Оплаченный курс')
-    paid_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, **NULLABLE, verbose_name='Оплаченный урок')
-    payment_amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Сумма платежа')
-    method = models.CharField(max_length=100, verbose_name='Метод платежа')
+    payment_amount = models.PositiveIntegerField(default=1000, verbose_name='Сумма платежа')
+    link = models.URLField(max_length=400, **NULLABLE, verbose_name='Ссылка на оплату')
+    session_id = models.CharField(max_length=400, **NULLABLE, verbose_name='Сессия')
+
+    def save(self, *args, **kwargs):
+        if self.paid_course is not None:
+            self.payment_amount = self.paid_course.price
+        super(Payment, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'payments'
@@ -42,4 +53,4 @@ class Payment(models.Model):
         verbose_name_plural = 'Оплаты'
 
     def __str__(self):
-        return f'{self.user} {self.date} {self.paid_course if self.paid_course else self.paid_lesson}'
+        return f'{self.user} {self.date} {self.paid_course} {self.payment_amount}'
