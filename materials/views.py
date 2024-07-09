@@ -5,7 +5,9 @@ from rest_framework.viewsets import ModelViewSet
 from materials.models import Course, Lesson
 from materials.paginations import CustomPagination
 from materials.serializers import CourseSerializer, LessonSerializer
+from subscriptions.models import Subscription
 from users.permissions import IsModer, IsUser
+from .tasks import email_sender
 
 
 class CourseViewSet(ModelViewSet):
@@ -35,6 +37,20 @@ class CourseViewSet(ModelViewSet):
         course = serializer.save()
         course.user = self.request.user
         course.save()
+        # add.delay()
+
+    def perform_update(self, serializer):
+        """
+        Отправляет письмо всем подписчикам курса при обновлении курса
+        """
+        course = serializer.instance
+        updated_subscriptions = Subscription.objects.filter(course=course)
+        users_subscribed_to_course = [subscription.user for subscription in updated_subscriptions]
+        subject = 'Тема письма'
+        message = 'Текст письма'
+        for user in users_subscribed_to_course:
+            email_sender.delay(subject, message, user.email)
+        return super().perform_update(serializer)
 
 
 class LessonCreateAPIView(CreateAPIView):
